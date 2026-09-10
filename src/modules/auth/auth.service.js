@@ -61,7 +61,7 @@ export const signup = async (req, res) => {
   successResponse({
     res,
     statusCode: 201,
-    message: "User creared successfully",
+    message: "User created successfully",
     data: { user },
   });
 };

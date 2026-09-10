@@ -40,6 +40,21 @@ export const generalFields = {
   provider: joi.string().valid(...Object.values(providerEnum)),
   profilePic: joi.string(),
   coverPic: joi.string(),
+  companyName: joi.string().max(25).messages({
+    "any.required": "Company Name is required",
+    "string.max": "Company Name must be at most 25 character long",
+  }),
+  description: joi.string().max(1000).messages({
+    "string.max": "Description must be at most 1000 characters long",
+  }),
+  companyEmail: joi
+    .string()
+    .email({
+      minDomainSegments: 2,
+      maxDomainSegments: 5,
+    }),
+    industry: joi.string(),
+    address: joi.string(),
 };
 
 export const validation = (schema) => {

@@ -5,6 +5,19 @@ import {
   workingTimeEnum,
 } from "../../common/utils/enum/enum.js";
 
+const isAddedByHR = async function (userId) {
+  const companyModel = mongoose.model("Company");
+  const companies = await companyModel.find({
+    _id: { $in: this.companyId },
+  });
+
+  return companies.some(
+    (company) =>
+      company.HRs.some((hrId) => hrId.equals(userId)) ||
+      company.CreatedBy.toString() === userId.toString()
+  );
+};
+
 const jobOpportunitySchema = new mongoose.Schema(
   {
     jobTitle: String,
@@ -44,20 +57,15 @@ const jobOpportunitySchema = new mongoose.Schema(
       },
     },
     closed: Boolean,
-    companyId: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
+    companyId: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Company", required: true },
+    ],
   },
   {
     timestamps: true,
   },
 );
 
-const isAddedByHR = async function (userId) {
-  const Company = mongoose.model("Company");
-  const companies = await Company.find({
-    _id: { $in: this.companyId },
-  });
-  return companies.some((c) => c.HRs.some((hrId) => hrId.equals(userId)));
-};
 
 const jobOpportunityModel = mongoose.model(
   "JobOpportunity",

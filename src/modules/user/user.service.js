@@ -4,6 +4,7 @@ import { compareHash } from "../../common/utils/security/hash.security.js";
 import userModel from "../../DB/models/user.model.js";
 import {
   findByIdAndUpdate,
+  findOne,
   findOneAndUpdate,
   updateOne,
 } from "../../DB/repository/database.repository.js";
@@ -49,9 +50,11 @@ export const getProfile = async (req, res) => {
 export const getpublicProfile = async (req, res) => {
   const { userId } = req.params;
 
-  const userData = await userModel
-    .findOne({ _id: userId, deletedAt: { $exists: false } })
-    .select("firstName lastName userName mobileNumber profilePic coverPic ");
+  const userData = await findOne({
+    model: userModel,
+    filter: { _id: userId, deletedAt: { $exists: false } },
+    select: "firstName lastName userName mobileNumber profilePic coverPic",
+  })
   if (!userData) throw notFoundException("User Not Found");
   // select first and last name and remove them just to show the userName instead of first and last name in the response
   const user = userData.toObject();

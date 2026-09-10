@@ -32,9 +32,12 @@ router.patch(
 router.delete(
   "/:companyId/delete",
   authentication({ tokenType: tokenTypeEnum.Access }),
+  authorization({ accessRoles: [roleEnum.User, roleEnum.Admin] }),
   validation(companyValidation.softDeleteSchema),
   companyService.softDelete,
 );
+
+router.get("/:companyId/jobs", companyService.getCompanyWithJobs);
 
 router.get("/search", companyService.searchCompany);
 

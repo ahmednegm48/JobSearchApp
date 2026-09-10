@@ -118,6 +118,23 @@ export const searchCompany = async (req, res) => {
   });
 };
 
+export const getCompanyWithJobs = async (req, res) => {
+  const { companyId } = req.params;
+  const company = await findOne({
+    model: companyModel,
+    filter: { _id: companyId, deletedAt: { $exists: false } },
+    populate: "jobs",
+  })
+  if (!company) throw notFoundException("Company Not Found");
+
+  successResponse({
+    res,
+    statusCode: 200,
+    message: "Companies found successfully",
+    data: { company },
+  });
+};
+
 export const updateLogo = async (req, res) => {
   const { companyId } = req.params;
   const { user } = req;

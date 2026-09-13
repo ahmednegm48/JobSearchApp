@@ -37,7 +37,7 @@ router.delete(
   companyService.softDelete,
 );
 
-router.get("/:companyId/jobs", companyService.getCompanyWithJobs);
+router.get("/:companyId/all-jobs", companyService.getCompanyWithJobs);
 
 router.get("/search", companyService.searchCompany);
 
@@ -74,5 +74,8 @@ router.delete(
   authentication({ tokenType: tokenTypeEnum.Access }),
   companyService.deleteCoverPic,
 );
+
+router.get("/:companyId/jobs{/:jobId}",companyService.getJobs)
+router.get("/",companyService.getJobs)
 
 export default router;

@@ -2,7 +2,7 @@ export const findOne = async({
     model,
     filter={},
     select = '',
-    populate=''
+    populate=null
 } = {}) => {
     return await model.findOne(filter).select(select).populate(populate)
 }

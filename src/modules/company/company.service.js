@@ -5,6 +5,7 @@ import {
 } from "../../common/utils/response/error.response.js";
 import { successResponse } from "../../common/utils/response/success.response.js";
 import companyModel from "../../DB/models/company.model.js";
+import jobOpportunityModel from "../../DB/models/job-opportunity.model.js";
 import {
   createOne,
   findByIdAndUpdate,
@@ -124,7 +125,7 @@ export const getCompanyWithJobs = async (req, res) => {
     model: companyModel,
     filter: { _id: companyId, deletedAt: { $exists: false } },
     populate: "jobs",
-  })
+  });
   if (!company) throw notFoundException("Company Not Found");
 
   successResponse({
@@ -219,4 +220,68 @@ export const deleteCoverPic = async (req, res) => {
     statusCode: 200,
     message: "Cover Picture Deleted Successfully",
   });
+};
+
+export const getJobs = async (req, res) => {
+  const { page = 1, limit = 10, companyName } = req.query;
+  const { companyId, jobId } = req.params;
+  const skip = (page - 1) * limit;
+
+  if (jobId) {
+    const job = await findOne({
+      model: jobOpportunityModel,
+      filter: { companyId, _id: jobId },
+    });
+
+    if (!job) throw notFoundException("Job Not Found");
+
+    return successResponse({
+      res,
+      statusCode: 200,
+      message: "Job Retrived Successfully",
+      data: {
+        job,
+      },
+    });
+  } else {
+    const filter = {};
+    if (companyId) {
+      filter.companyId = companyId;
+    } else if (companyName) {
+      const companies = await companyModel.find({
+        companyName: { $regex: companyName }
+      }).select('_id');
+
+      
+      
+      filter.companyId = { $in: companies.map(c => c._id.toString()) };
+      console.log(filter);
+    }
+
+    const [jobs, totalJobs] = await Promise.all([
+      jobOpportunityModel
+        .find(filter)
+        .populate("companyId","companyName")
+        .sort({ createdAt: -1 })
+        .skip(Number(skip))
+        .limit(Number(limit)),
+      jobOpportunityModel.countDocuments(filter),
+    ]);
+
+    if (!jobs) throw notFoundException("No Job Found");
+
+    return successResponse({
+      res,
+      statusCode: 200,
+      message: "Jobs Retrived Successfully",
+      data: {
+        jobs,
+        pagination: {
+          currentPage: Number(page),
+          totalPages: Math.ceil(totalJobs / limit),
+          totalJobs,
+        },
+      },
+    });
+  }
 };

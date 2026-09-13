@@ -30,8 +30,11 @@ router.delete(
   jobService.deleteJob,
 );
 
-router.get("/",jobService.filteredJobs)
-router.get("/:jobId/application",jobService.getApplication)
-
+router.get("/", jobService.filteredJobs);
+router.get(
+  "/:jobId/application",
+  authentication({ tokenType: tokenTypeEnum.Access }),
+  jobService.getApplication,
+);
 
 export default router;

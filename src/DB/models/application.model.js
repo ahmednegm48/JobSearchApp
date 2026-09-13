@@ -17,8 +17,24 @@ const applicationSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   },
 );
+
+applicationSchema.virtual("user", {
+  ref: "User",
+  localField: "userId",
+  foreignField: "_id",
+  justOne: false,
+});
+
+applicationSchema.virtual("job", {
+  ref: "JobOpportunity",
+  localField: "jobId",
+  foreignField: "_id",
+  justOne: false,
+});
 
 const applicationModel = mongoose.model("Application", applicationSchema);
 export default applicationModel;

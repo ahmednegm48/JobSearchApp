@@ -11,6 +11,7 @@ import authRouter from "./modules/auth/auth.controller.js";
 import userRouter from "./modules/user/user.controller.js";
 import companyRouter from "./modules/company/company.controller.js";
 import jobRouter from "./modules/job/job.controller.js";
+import applicationRouter from "./modules/application/application.controller.js";
 import { customRateLimit } from "./common/middleware/rete-limit.middleware.js";
 
 const bootstrap = async (app, express) => {
@@ -22,6 +23,7 @@ const bootstrap = async (app, express) => {
   app.use("/user", userRouter);
   app.use("/company", companyRouter);
   app.use("/job", jobRouter);
+  app.use("/application", applicationRouter);
 
   app.get("/", (req, res) => res.send("welcome :)"));
 

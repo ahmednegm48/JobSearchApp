@@ -68,12 +68,6 @@ const jobOpportunitySchema = new mongoose.Schema(
   },
 );
 
-jobOpportunitySchema.virtual('applicationModel', {
-  ref: 'applicationModel',
-  localField: '_id',
-  foreignField: 'jobId',
-  justOne: false
-});
 
 const jobOpportunityModel = mongoose.model(
   "JobOpportunity",

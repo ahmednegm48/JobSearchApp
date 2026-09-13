@@ -14,7 +14,7 @@ const isAddedByHR = async function (userId) {
   return companies.some(
     (company) =>
       company.HRs.some((hrId) => hrId.equals(userId)) ||
-      company.CreatedBy.toString() === userId.toString()
+      company.CreatedBy.toString() === userId.toString(),
   );
 };
 
@@ -56,16 +56,24 @@ const jobOpportunitySchema = new mongoose.Schema(
         message: "addedBy must be an HR of the specified company",
       },
     },
-    closed: Boolean,
-    companyId: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "Company", required: true },
-    ],
+    closed: { type: Boolean, default: false },
+    companyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Company",
+      required: true,
+    },
   },
   {
     timestamps: true,
   },
 );
 
+jobOpportunitySchema.virtual('applicationModel', {
+  ref: 'applicationModel',
+  localField: '_id',
+  foreignField: 'jobId',
+  justOne: false
+});
 
 const jobOpportunityModel = mongoose.model(
   "JobOpportunity",

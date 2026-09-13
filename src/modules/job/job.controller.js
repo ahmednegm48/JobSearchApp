@@ -17,5 +17,21 @@ router.post(
   jobService.addJob,
 );
 
+router.patch(
+  "/:jobId",
+  authentication({ tokenType: tokenTypeEnum.Access }),
+  validation(jobValidation.updateJobSchema),
+  jobService.updateJob,
+);
+
+router.delete(
+  "/:jobId",
+  authentication({ tokenType: tokenTypeEnum.Access }),
+  jobService.deleteJob,
+);
+
+router.get("/",jobService.filteredJobs)
+router.get("/:jobId/application",jobService.getApplication)
+
 
 export default router;

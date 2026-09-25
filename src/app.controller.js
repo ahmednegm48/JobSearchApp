@@ -13,6 +13,8 @@ import companyRouter from "./modules/company/company.controller.js";
 import jobRouter from "./modules/job/job.controller.js";
 import applicationRouter from "./modules/application/application.controller.js";
 import { customRateLimit } from "./common/middleware/rete-limit.middleware.js";
+import { intializeSocket } from "./common/utils/socket/socket.service.js";
+import { PORT } from "./config/config.service.js";
 
 const bootstrap = async (app, express) => {
   app.use(express.json(), cors(corsOptions()), helmet(), customRateLimit());
@@ -32,6 +34,11 @@ const bootstrap = async (app, express) => {
   });
 
   app.use(globalErrorHandler);
+
+  const httpServer = app.listen(PORT, () =>
+    console.log(`app listening on port ${PORT}!`),
+  );
+  intializeSocket(httpServer);
 };
 
 export default bootstrap;
